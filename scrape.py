@@ -1,5 +1,7 @@
 import csv
 import sys
+import _thread
+
 from urllib.request import urlopen
 
 from requests_html import HTMLSession
@@ -42,34 +44,48 @@ def get_beer_params(html):
     }
 
 
+
+def write_reviews(file_number, start_range, end_range):
+    with open('beer_reviews'+file_number+'.csv', mode='a') as csv_file:
+        fieldnames = ['name', 'region', 'style', 'brewery', 'review']
+        writer = csv.DictWriter(csv_file, fieldnames=fieldnames, delimiter=';')
+        writer.writeheader()
+        for i in range(start_range, end_range):
+            parse_beer_page(i,writer)
+
+
+def parse_beer_page(number,writer):
+    session = HTMLSession()
+
+    url = 'https://www.ratebeer.com/beer/{}/'.format(str(number + 1))
+    try:
+        page = session.get(url)
+        page.html.render(script=injected_script)
+        row = {}
+        for key, value in get_beer_params(page.html).items():
+            row[key] = value
+        if row['name'] != '':
+            reviews_divs = page.html.find(
+                '.BeerReviewListItem___StyledDiv-iilxqQ>.Text___StyledTypographyTypeless-bukSfn')
+            reviews = [review.text for review in reviews_divs]
+
+            for review in reviews:
+                write_row = row.copy()
+                write_row['review'] = review
+                writer.writerow(write_row)
+    except:
+        return
+    finally:
+        session.close()
+        print(number)
+
 injected_script = get_script_expanding_reviews_code()
 
-with open('beer_reviews2.csv', mode='w') as csv_file:
-    fieldnames = ['name', 'region', 'style', 'brewery', 'review']
-    writer = csv.DictWriter(csv_file, fieldnames=fieldnames, delimiter=';')
-    # writer.writeheader()
-    for i in range(start_range, end_range):
+scaning_range=end_range-start_range
+starting_file_number=5
+try:
+    for i in range(4):
+        start_scanning = start_range + i * scaning_range
+        end_scanning = end_range + i * scaning_range
+        _thread.start_new_thread(write_reviews, (starting_file_number + i, start_scanning, end_scanning))
 
-        session = HTMLSession()
-
-        url = 'https://www.ratebeer.com/beer/{}/'.format(str(i + 1))
-        try:
-            page = session.get(url)
-            page.html.render(script=injected_script)
-            row = {}
-            for key, value in get_beer_params(page.html).items():
-                row[key] = value
-            if row['name'] != '':
-                reviews_divs = page.html.find(
-                    '.BeerReviewListItem___StyledDiv-iilxqQ>.Text___StyledTypographyTypeless-bukSfn')
-                reviews = [review.text for review in reviews_divs]
-
-                for review in reviews:
-                    write_row = row.copy()
-                    write_row['review'] = review
-                    writer.writerow(write_row)
-        except:
-            continue
-        finally:
-            session.close()
-            print(i)
