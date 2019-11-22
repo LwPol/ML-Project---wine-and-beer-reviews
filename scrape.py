@@ -1,7 +1,6 @@
+import _thread
 import csv
 import sys
-import _thread
-
 from urllib.request import urlopen
 
 from requests_html import HTMLSession
@@ -49,7 +48,6 @@ def write_reviews(file_number, start_range, end_range):
     with open('beer_reviews'+file_number+'.csv', mode='a') as csv_file:
         fieldnames = ['name', 'region', 'style', 'brewery', 'review']
         writer = csv.DictWriter(csv_file, fieldnames=fieldnames, delimiter=';')
-        writer.writeheader()
         for i in range(start_range, end_range):
             parse_beer_page(i,writer)
 
@@ -81,11 +79,12 @@ def parse_beer_page(number,writer):
 
 injected_script = get_script_expanding_reviews_code()
 
-scaning_range=end_range-start_range
-starting_file_number=5
+scanning_range = end_range - start_range
+starting_file_number = 1
 try:
     for i in range(4):
-        start_scanning = start_range + i * scaning_range
-        end_scanning = end_range + i * scaning_range
+        start_scanning = start_range + i * scanning_range
+        end_scanning = end_range + i * scanning_range
         _thread.start_new_thread(write_reviews, (starting_file_number + i, start_scanning, end_scanning))
-
+except:
+    print("Nie umiesz w wielowatkowość, pogódź się z tym")
