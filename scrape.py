@@ -42,7 +42,7 @@ def get_beer_params(html):
     }
 
 
-with open('beer_reviews.csv', mode='a') as csv_file:
+with open('beer_reviews1.csv', mode='w') as csv_file:
     fieldnames = ['name', 'region', 'style', 'brewery', 'review']
     writer = csv.DictWriter(csv_file, fieldnames=fieldnames, delimiter=';')
     # writer.writeheader()
@@ -70,3 +70,4 @@ with open('beer_reviews.csv', mode='a') as csv_file:
                     writer.writerow(write_row)
         except:
             continue
+        print(i)
