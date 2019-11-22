@@ -1,4 +1,3 @@
-import _thread
 import csv
 import sys
 from urllib.request import urlopen
@@ -7,6 +6,7 @@ from requests_html import HTMLSession
 
 start_range = int(sys.argv[1])
 end_range = int(sys.argv[2])
+
 
 def retrieve_jquery_source():
     with urlopen('http://code.jquery.com/jquery-latest.min.js') as jquery:
@@ -43,16 +43,17 @@ def get_beer_params(html):
     }
 
 
-
 def write_reviews(file_number, start_range, end_range):
-    with open('beer_reviews'+file_number+'.csv', mode='a') as csv_file:
+    with open('beer_reviews' + str(file_number) + '.csv', mode='a', newline='') as csv_file:
         fieldnames = ['name', 'region', 'style', 'brewery', 'review']
         writer = csv.DictWriter(csv_file, fieldnames=fieldnames, delimiter=';')
         for i in range(start_range, end_range):
-            parse_beer_page(i,writer)
+            parse_beer_page(i, writer)
 
 
-def parse_beer_page(number,writer):
+def parse_beer_page(number, writer):
+    injected_script = get_script_expanding_reviews_code()
+
     session = HTMLSession()
 
     url = 'https://www.ratebeer.com/beer/{}/'.format(str(number + 1))
@@ -72,19 +73,20 @@ def parse_beer_page(number,writer):
                 write_row['review'] = review
                 writer.writerow(write_row)
     except:
+        print("Error")
         return
     finally:
         session.close()
         print(number)
 
-injected_script = get_script_expanding_reviews_code()
 
+write_reviews(4, start_range, end_range)
+"""
 scanning_range = end_range - start_range
 starting_file_number = 1
-try:
-    for i in range(4):
-        start_scanning = start_range + i * scanning_range
-        end_scanning = end_range + i * scanning_range
-        _thread.start_new_thread(write_reviews, (starting_file_number + i, start_scanning, end_scanning))
-except:
-    print("Nie umiesz w wielowatkowość, pogódź się z tym")
+
+for i in range(2):
+    start_scanning = start_range + i * scanning_range
+    end_scanning = end_range + i * scanning_range
+    threading.Thread(target=write_reviews, args= (starting_file_number + i, start_scanning, end_scanning, )).start()
+"""
