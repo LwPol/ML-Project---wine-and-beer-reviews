@@ -1,17 +1,16 @@
-from requests_html import HTMLSession
-from urllib.request import urlopen
+import csv
 import sys
+from urllib.request import urlopen
 
-def print_usage():
-    usage = """\
-    Usage: {} [beer_id]
-    """.format(sys.argv[0])
-    print(usage)
-    sys.exit(0)
+from requests_html import HTMLSession
+
+start_range = int(sys.argv[1])
+end_range = int(sys.argv[2])
 
 def retrieve_jquery_source():
     with urlopen('http://code.jquery.com/jquery-latest.min.js') as jquery:
         return jquery.read().decode('utf-8')
+
 
 def get_script_expanding_reviews_code():
     jquery_src = retrieve_jquery_source()
@@ -23,8 +22,16 @@ def get_script_expanding_reviews_code():
     """
     return jquery_src + expand_reviews_script
 
+
 def get_beer_params(html):
     header_div = html.find('.fj-s.fa-c.mb-4', first=True)
+    if header_div is None:
+        return {
+            'name': '',
+            'region': '',
+            'style': '',
+            'brewery': ''
+        }
     mui_elems = header_div.find('.MuiTypography-root')
     links = header_div.find('a')
     return {
@@ -34,21 +41,32 @@ def get_beer_params(html):
         'brewery': links[1].text
     }
 
-if len(sys.argv) != 2:
-    print_usage()
 
-injected_script = get_script_expanding_reviews_code()
+with open('beer_reviews.csv', mode='a') as csv_file:
+    fieldnames = ['name', 'region', 'style', 'brewery', 'review']
+    writer = csv.DictWriter(csv_file, fieldnames=fieldnames, delimiter=';')
+    # writer.writeheader()
+    for i in range(start_range, end_range):
 
-session = HTMLSession()
+        injected_script = get_script_expanding_reviews_code()
 
-url = 'https://www.ratebeer.com/beer/{}/'.format(sys.argv[1])
-page = session.get(url)
-page.html.render(script=injected_script)
+        session = HTMLSession()
 
-for key, value in get_beer_params(page.html).items():
-    print('{}: {}'.format(key, value))
-print()
+        url = 'https://www.ratebeer.com/beer/{}/'.format(str(i + 1))
+        try:
+            page = session.get(url)
+            page.html.render(script=injected_script)
+            row = {}
+            for key, value in get_beer_params(page.html).items():
+                row[key] = value
+            if row['name'] != '':
+                reviews_divs = page.html.find(
+                    '.BeerReviewListItem___StyledDiv-iilxqQ>.Text___StyledTypographyTypeless-bukSfn')
+                reviews = [review.text for review in reviews_divs]
 
-reviews_divs = page.html.find('.BeerReviewListItem___StyledDiv-iilxqQ>.Text___StyledTypographyTypeless-bukSfn')
-reviews = [review.text for review in reviews_divs]
-print('\n-----------\n'.join(reviews))
+                for review in reviews:
+                    write_row = row.copy()
+                    write_row['review'] = review
+                    writer.writerow(write_row)
+        except:
+            continue
