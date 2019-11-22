@@ -42,13 +42,13 @@ def get_beer_params(html):
     }
 
 
-with open('beer_reviews1.csv', mode='w') as csv_file:
+injected_script = get_script_expanding_reviews_code()
+
+with open('beer_reviews2.csv', mode='w') as csv_file:
     fieldnames = ['name', 'region', 'style', 'brewery', 'review']
     writer = csv.DictWriter(csv_file, fieldnames=fieldnames, delimiter=';')
     # writer.writeheader()
     for i in range(start_range, end_range):
-
-        injected_script = get_script_expanding_reviews_code()
 
         session = HTMLSession()
 
@@ -70,4 +70,6 @@ with open('beer_reviews1.csv', mode='w') as csv_file:
                     writer.writerow(write_row)
         except:
             continue
-        print(i)
+        finally:
+            session.close()
+            print(i)
