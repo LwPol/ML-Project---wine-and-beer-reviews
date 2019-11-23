@@ -1,4 +1,5 @@
 import csv
+import datetime
 import sys
 from urllib.request import urlopen
 
@@ -77,10 +78,11 @@ def parse_beer_page(number, writer):
         return
     finally:
         session.close()
-        print(number)
+
+        print(str(number) + " " + str(datetime.datetime.now()))
 
 
-write_reviews(4, start_range, end_range)
+write_reviews(6, start_range, end_range)
 """
 scanning_range = end_range - start_range
 starting_file_number = 1
