@@ -82,7 +82,7 @@ def parse_beer_page(number, writer):
         print(str(number) + " " + str(datetime.datetime.now()))
 
 
-write_reviews(6, start_range, end_range)
+write_reviews(int(sys.argv[3]), start_range, end_range)
 """
 scanning_range = end_range - start_range
 starting_file_number = 1

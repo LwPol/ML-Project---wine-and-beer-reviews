@@ -1,3 +1,5 @@
 env/
 .idea
 Clear
+runEnv.bat
+runScrape.bat
