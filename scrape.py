@@ -1,6 +1,7 @@
 import csv
 import datetime
 import sys
+from multiprocessing import Pool
 from urllib.request import urlopen
 
 from requests_html import HTMLSession
@@ -28,12 +29,7 @@ def get_script_expanding_reviews_code():
 def get_beer_params(html):
     header_div = html.find('.fj-s.fa-c.mb-4', first=True)
     if header_div is None:
-        return {
-            'name': '',
-            'region': '',
-            'style': '',
-            'brewery': ''
-        }
+        return None
     mui_elems = header_div.find('.MuiTypography-root')
     links = header_div.find('a')
     return {
@@ -44,51 +40,61 @@ def get_beer_params(html):
     }
 
 
+class BeerPageParser:
+    def __init__(self, injected_script):
+        print("parser created")
+        self.injected_script = injected_script
+
+    def parse_beer_page(self, number):
+        url = 'https://www.ratebeer.com/beer/{}/'.format(str(number + 1))
+        try:
+            session = HTMLSession()
+            page = session.get(url)
+            page.html.render(script=self.injected_script, sleep=1)
+            beer = get_beer_params(page.html)
+            if beer is not None:
+                reviews_divs = page.html.find(
+                    '.BeerReviewListItem___StyledDiv-iilxqQ>.Text___StyledTypographyTypeless-bukSfn')
+                beer['reviews'] = [review.text for review in reviews_divs]
+            return beer
+        except Exception as ex:
+            print(ex)
+            print("Error on beer id", number + 1, file=sys.stderr)
+            return None
+        finally:
+            page.close()
+            session.close()
+            print(str(number) + " " + str(datetime.datetime.now()))
+
+
+beer_parser = BeerPageParser(get_script_expanding_reviews_code())
+
+
+def drink_beer(beer_number):
+    return beer_parser.parse_beer_page(beer_number)
+
+
 def write_reviews(file_number, start_range, end_range):
-    with open('beer_reviews' + str(file_number) + '.csv', mode='a', newline='') as csv_file:
+    with open('beer_reviews' + str(file_number) + '.csv', mode='a', newline='', encoding='utf-8') as csv_file, Pool(
+            4) as pool:
         fieldnames = ['name', 'region', 'style', 'brewery', 'review']
         writer = csv.DictWriter(csv_file, fieldnames=fieldnames, delimiter=';')
-        for i in range(start_range, end_range):
-            parse_beer_page(i, writer)
+        for beer in pool.map(drink_beer, range(start_range, end_range)):
+            if beer is None:
+                continue
+            for review in beer['reviews']:
+                row = {key: entry for key, entry in beer.items() if key != 'reviews'}
+                row['review'] = review
+                writer.writerow(row)
 
 
-def parse_beer_page(number, writer):
-    injected_script = get_script_expanding_reviews_code()
-
-    session = HTMLSession()
-
-    url = 'https://www.ratebeer.com/beer/{}/'.format(str(number + 1))
-    try:
-        page = session.get(url)
-        page.html.render(script=injected_script)
-        row = {}
-        for key, value in get_beer_params(page.html).items():
-            row[key] = value
-        if row['name'] != '':
-            reviews_divs = page.html.find(
-                '.BeerReviewListItem___StyledDiv-iilxqQ>.Text___StyledTypographyTypeless-bukSfn')
-            reviews = [review.text for review in reviews_divs]
-
-            for review in reviews:
-                write_row = row.copy()
-                write_row['review'] = review
-                writer.writerow(write_row)
-    except:
-        print("Error")
-        return
-    finally:
-        session.close()
-
-        print(str(number) + " " + str(datetime.datetime.now()))
-
-
-write_reviews(6, start_range, end_range)
-"""
-scanning_range = end_range - start_range
-starting_file_number = 1
-
-for i in range(2):
-    start_scanning = start_range + i * scanning_range
-    end_scanning = end_range + i * scanning_range
-    threading.Thread(target=write_reviews, args= (starting_file_number + i, start_scanning, end_scanning, )).start()
-"""
+if __name__ == '__main__':
+    number_of_pit_stops = 20
+    extracting_range = end_range - start_range
+    single_save_range = int(extracting_range / number_of_pit_stops)
+    for i in range(number_of_pit_stops):
+        section_start = int(start_range + i * single_save_range)
+        section_end = int(start_range + (i + 1) * single_save_range)
+        file_number = int(sys.argv[3])
+        write_reviews(file_number, section_start, section_end)
+        print("--------------------------------------------------------------------- Pit stop nr" + str(i) + ' reached')
