@@ -1,11 +1,11 @@
 import csv
 import sys
+import asyncio
 from urllib.request import urlopen
+from concurrent.futures import ProcessPoolExecutor
 
-from requests_html import HTMLSession
-
-start_range = int(sys.argv[1])
-end_range = int(sys.argv[2])
+from pyppeteer import launch
+from requests_html import HTML
 
 
 def retrieve_jquery_source():
@@ -24,15 +24,25 @@ def get_script_expanding_reviews_code():
     return jquery_src + expand_reviews_script
 
 
+async def render_html(url, injected_script):
+    browser = await launch()
+    try:
+        page = await browser.newPage()
+        await page.goto(url)
+        await page.evaluate(injected_script, force_expr=True)
+        return await page.content()
+    finally:
+        await browser.close()
+
+
+def get_page_html(url, injected_script):
+    return asyncio.get_event_loop().run_until_complete(render_html(url, injected_script))
+
+
 def get_beer_params(html):
     header_div = html.find('.fj-s.fa-c.mb-4', first=True)
     if header_div is None:
-        return {
-            'name': '',
-            'region': '',
-            'style': '',
-            'brewery': ''
-        }
+        return None
     mui_elems = header_div.find('.MuiTypography-root')
     links = header_div.find('a')
     return {
@@ -42,51 +52,50 @@ def get_beer_params(html):
         'brewery': links[1].text
     }
 
+class BeerPageParser:
+    def __init__(self, injected_script):
+        self.injected_script = injected_script
+
+    def parse_beer_page(self, number):
+        url = 'https://www.ratebeer.com/beer/{}/'.format(str(number + 1))
+        try:
+            print(number)
+            html = HTML(html=get_page_html(url, self.injected_script))
+            beer = get_beer_params(html)
+            if beer is not None:
+                reviews_divs = html.find(
+                    '.BeerReviewListItem___StyledDiv-iilxqQ>.Text___StyledTypographyTypeless-bukSfn')
+                beer['reviews'] = [review.text for review in reviews_divs]
+            return beer
+        except Exception as ex:
+            print(ex)
+            print("Error on beer id", number + 1, file=sys.stderr)
+            return None
+
+beer_parser = BeerPageParser(get_script_expanding_reviews_code())
+
+def drink_beer(beer_number):
+    return beer_parser.parse_beer_page(beer_number)
+
 
 def write_reviews(file_number, start_range, end_range):
-    with open('beer_reviews' + str(file_number) + '.csv', mode='a', newline='') as csv_file:
+    with open(
+            'beer_reviews' + str(file_number) + '.csv',
+            mode='a',
+            newline='',
+            encoding='utf-8') as csv_file, ProcessPoolExecutor() as pool:
         fieldnames = ['name', 'region', 'style', 'brewery', 'review']
         writer = csv.DictWriter(csv_file, fieldnames=fieldnames, delimiter=';')
-        for i in range(start_range, end_range):
-            parse_beer_page(i, writer)
+        for beer in pool.map(drink_beer, range(start_range, end_range)):
+            if beer is None:
+                continue
+            for review in beer['reviews']:
+                row = {key: entry for key, entry in beer.items() if key != 'reviews'}
+                row['review'] = review
+                writer.writerow(row)
 
-
-def parse_beer_page(number, writer):
-    injected_script = get_script_expanding_reviews_code()
-
-    session = HTMLSession()
-
-    url = 'https://www.ratebeer.com/beer/{}/'.format(str(number + 1))
-    try:
-        page = session.get(url)
-        page.html.render(script=injected_script)
-        row = {}
-        for key, value in get_beer_params(page.html).items():
-            row[key] = value
-        if row['name'] != '':
-            reviews_divs = page.html.find(
-                '.BeerReviewListItem___StyledDiv-iilxqQ>.Text___StyledTypographyTypeless-bukSfn')
-            reviews = [review.text for review in reviews_divs]
-
-            for review in reviews:
-                write_row = row.copy()
-                write_row['review'] = review
-                writer.writerow(write_row)
-    except:
-        print("Error")
-        return
-    finally:
-        session.close()
-        print(number)
-
-
-write_reviews(4, start_range, end_range)
-"""
-scanning_range = end_range - start_range
-starting_file_number = 1
-
-for i in range(2):
-    start_scanning = start_range + i * scanning_range
-    end_scanning = end_range + i * scanning_range
-    threading.Thread(target=write_reviews, args= (starting_file_number + i, start_scanning, end_scanning, )).start()
-"""
+if __name__ == '__main__':
+    start_range = int(sys.argv[1])
+    end_range = int(sys.argv[2])
+    file_num = int(sys.argv[3])
+    write_reviews(file_num, start_range, end_range)
