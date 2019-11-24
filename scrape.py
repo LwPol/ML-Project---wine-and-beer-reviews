@@ -79,7 +79,11 @@ def drink_beer(beer_number):
 
 
 def write_reviews(file_number, start_range, end_range):
-    with open('beer_reviews' + str(file_number) + '.csv', mode='a', newline='') as csv_file, ProcessPoolExecutor() as pool:
+    with open(
+            'beer_reviews' + str(file_number) + '.csv',
+            mode='a',
+            newline='',
+            encoding='utf-8') as csv_file, ProcessPoolExecutor() as pool:
         fieldnames = ['name', 'region', 'style', 'brewery', 'review']
         writer = csv.DictWriter(csv_file, fieldnames=fieldnames, delimiter=';')
         for beer in pool.map(drink_beer, range(start_range, end_range)):
