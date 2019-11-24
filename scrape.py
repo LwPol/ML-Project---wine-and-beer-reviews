@@ -34,6 +34,7 @@ async def render_html(url, injected_script):
     finally:
         await browser.close()
 
+
 def get_page_html(url, injected_script):
     return asyncio.get_event_loop().run_until_complete(render_html(url, injected_script))
 
@@ -53,7 +54,6 @@ def get_beer_params(html):
 
 class BeerPageParser:
     def __init__(self, injected_script):
-        print("parser created")
         self.injected_script = injected_script
 
     def parse_beer_page(self, number):
