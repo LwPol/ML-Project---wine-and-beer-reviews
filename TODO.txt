@@ -1,0 +1,4 @@
+1. Dobór modelu
+2. NLP - ekstrakcja cech, przymiotników 
+3. filtrowanie po długości 
+4. Testy
