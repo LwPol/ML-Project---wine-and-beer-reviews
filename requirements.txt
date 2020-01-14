@@ -1,6 +1,8 @@
+numpy
 keras
 nltk
 appdirs==1.4.3
+tensorflow==2.0.0
 beautifulsoup4==4.8.1
 bs4==0.0.1
 certifi==2019.9.11

@@ -4,9 +4,8 @@ import glob
 from langdetect import detect
 from nltk.corpus import wordnet as wn
 
-
 # line_count = 0
-# dataset_csv = 'beer_dataset.csv'
+dataset_csv = 'beer_dataset.csv'
 # english_reviews_only_file = 'english_reviews.csv'
 
 
