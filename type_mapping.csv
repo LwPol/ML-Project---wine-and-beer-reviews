@@ -1,0 +1,230 @@
+type                            ,value
+Gros and Petit Manseng          ,0
+Trebbiano                       ,1
+Alsace white blend              ,2
+Semillon-Sauvignon Blanc        ,3
+Tempranillo-Cabernet Sauvignon  ,4
+Sylvaner                        ,5
+Pecorino                        ,6
+Vidal Blanc                     ,7
+Furmint                         ,8
+Petit Manseng                   ,9
+Moscatel                        ,10
+Syrah-Grenache                  ,11
+Malbec-Cabernet Sauvignon       ,12
+Austrian Red Blend              ,13
+Agiorgitiko                     ,14
+Provence red blend              ,15
+Marsanne                        ,16
+Portuguese Sparkling            ,17
+Verdelho                        ,18
+Sauvignon Blanc-Semillon        ,19
+Fumé Blanc                      ,20
+Spätburgunder                   ,21
+Cortese                         ,22
+Arinto                          ,23
+Carignan                        ,24
+Rosado                          ,25
+Lagrein                         ,26
+Negroamaro                      ,27
+Cabernet Blend                  ,28
+Austrian white blend            ,29
+Godello                         ,30
+Arneis                          ,31
+Ribolla Gialla                  ,32
+Falanghina                      ,33
+St. Laurent                     ,34
+Malbec-Merlot                   ,35
+Tinto Fino                      ,36
+Sherry                          ,37
+Cabernet Sauvignon-Syrah        ,38
+Rosato                          ,39
+Sagrantino                      ,40
+Bonarda                         ,41
+Viura                           ,42
+Nerello Mascalese               ,43
+Cabernet Sauvignon-Merlot       ,44
+Greco                           ,45
+Friulano                        ,46
+Grenache Blanc                  ,47
+Muscat                          ,48
+Sémillon                        ,49
+Pinotage                        ,50
+Alvarinho                       ,51
+Grillo                          ,52
+Vernaccia                       ,53
+Monastrell                      ,54
+Fiano                           ,55
+Pinot Bianco                    ,56
+Turbiana                        ,57
+Verdicchio                      ,58
+Tinta de Toro                   ,59
+Roussanne                       ,60
+Mencía                          ,61
+Tannat                          ,62
+Dolcetto                        ,63
+G-S-M                           ,64
+Pinot Nero                      ,65
+Touriga Nacional                ,66
+Zweigelt                        ,67
+Montepulciano                   ,68
+Primitivo                       ,69
+Mourvèdre                       ,70
+Vermentino                      ,71
+Blaufränkisch                   ,72
+Prosecco                        ,73
+Torrontés                       ,74
+Meritage                        ,75
+Petit Verdot                    ,76
+Garganega                       ,77
+Melon                           ,78
+Verdejo                         ,79
+Sauvignon                       ,80
+Garnacha                        ,81
+Moscato                         ,82
+Aglianico                       ,83
+Nero d'Avola                    ,84
+Rhône-style White Blend         ,85
+Pinot Blanc                     ,86
+Albariño                        ,87
+Carmenère                       ,88
+Tempranillo Blend               ,89
+Chenin Blanc                    ,90
+"Corvina, Rondinella, Molinara" ,91
+Grenache                        ,92
+Port                            ,93
+Glera                           ,94
+Barbera                         ,95
+Sangiovese Grosso               ,96
+Petite Sirah                    ,97
+Shiraz                          ,98
+Viognier                        ,99
+Gewürztraminer                  ,100
+Gamay                           ,101
+Pinot Grigio                    ,102
+Bordeaux-style White Blend      ,103
+Portuguese White                ,104
+Grüner Veltliner                ,105
+Cabernet Franc                  ,106
+Champagne Blend                 ,107
+Pinot Gris                      ,108
+Rhône-style Red Blend           ,109
+Tempranillo                     ,110
+Sparkling Blend                 ,111
+White Blend                     ,112
+Portuguese Red                  ,113
+Malbec                          ,114
+Sangiovese                      ,115
+Zinfandel                       ,116
+Nebbiolo                        ,117
+Merlot                          ,118
+Rosé                            ,119
+Syrah                           ,120
+Sauvignon Blanc                 ,121
+Riesling                        ,122
+Bordeaux-style Red Blend        ,123
+Red Blend                       ,124
+Cabernet Sauvignon              ,125
+Chardonnay                      ,126
+Pinot Noir                      ,127
+IPA - Rye                       ,0
+Specialty Grain-Rye/Roggenbier  ,1
+Sak - Ginjo                     ,2
+Low Alcohol - Wheat             ,3
+Pale Lager - Strong             ,4
+Porter - Flavored               ,5
+Saké - Junmai                   ,6
+Saké - Ginjo                    ,7
+IPA - English                   ,8
+Sour/Wild - Dark                ,9
+Lambic - Unblended Jonge / Oude ,10
+Belgian Ale - Dark / Amber      ,11
+Berliner Weisse                 ,12
+Mead - Melomel/Fruited          ,13
+IPA - Black/Brown/Cascadian Dark,14
+Stout - Flavored                ,15
+Lambic - Gueuze                 ,16
+Apple Cider-Ice/Fire/Fortified  ,17
+Bock - Eisbock                  ,18
+Pilsener - Czech / Svetl�       ,19
+Bière de Garde / de Mars        ,20
+Flavored - Pumpkin / Vegetables ,21
+Stout - Oatmeal                 ,22
+Sour - Flanders Red / Bruin     ,23
+Quadrupel / Abt                 ,24
+Porter - Imperial               ,25
+Belgian Ale - Strong Dark       ,26
+Pilsener - Czech / Svetlý       ,27
+Porter - Baltic                 ,28
+Perry                           ,29
+Weissbier - Kristallweizen      ,30
+K�lsch / K�lsch-Style           ,31
+Kölsch / Kölsch-Style           ,32
+Sour / Wild Beer                ,33
+Porter - Smoked                 ,34
+Stout - Extra / Foreign         ,35
+Lambic - Fruited                ,36
+California Common / Steam Beer  ,37
+Dark Lager - Dunkel / Tmav�     ,38
+Klsch / Klsch-Style             ,39
+Pilsener - Czech / Svetl        ,40
+M�rzen / Oktoberfest Bier       ,41
+Radler / Shandy                 ,42
+Cream Ale                       ,43
+Traditional Ale - Other         ,44
+Bock - Weizenbock               ,45
+Specialty Grain - Other         ,46
+Malt Liquor                     ,47
+Dark Lager - Dunkel / Tmavý     ,48
+Smoked - Rauchbier              ,49
+Pilsener - Imperial             ,50
+Märzen / Oktoberfest Bier       ,51
+Scottish Ale                    ,52
+Altbier / Sticke Alt            ,53
+Old Ale                         ,54
+Dark Lager - Dunkel / Tmav      ,55
+Mead                            ,56
+Saison / Farmhouse / Grisette   ,57
+Dubbel                          ,58
+Weissbier - Dunkelweizen        ,59
+Schwarzbier / Black Lager       ,60
+Low / No Alcohol Beer           ,61
+Red Ale - Irish                 ,62
+Mrzen / Oktoberfest Bier        ,63
+Zwickelbier/Kellerbier/Landbier ,64
+Tripel                          ,65
+Pale Ale - English              ,66
+Scotch Ale / Wee Heavy          ,67
+Strong Ale - American           ,68
+Pale Lager - Intl / Premium     ,69
+Stout - Dry                     ,70
+Bock- Heller Bock / Maibock     ,71
+Bock - Dunkler Bock             ,72
+Mild Ale                        ,73
+Bock - Doppelbock               ,74
+Amber Lager - Intl / Vienna     ,75
+Strong Ale - English            ,76
+Witbier / Belgian White Ale     ,77
+IIPA - Imperial / Double IPA    ,78
+Apple Cider                     ,79
+Stout - Milk / Sweet            ,80
+Belgian Ale - Strong Pale       ,81
+Belgian Ale - Pale / Golden     ,82
+Stout - Imperial                ,83
+Wheat Ale                       ,84
+Helles / Dortmunder Export      ,85
+Flavored - Other                ,86
+BarleyWine / WheatWine / RyeWine,87
+Brown Ale                       ,88
+Stout                           ,89
+Flavored - Fruit                ,90
+Weissbier - Hefeweizen          ,91
+Red Ale / Intl Amber Ale        ,92
+Bitter - Premium / Strong / ESB ,93
+Pale Ale - American / APA       ,94
+Porter                          ,95
+Pilsener / Pils / Pilsner       ,96
+IPA                             ,97
+Blonde Ale / Golden Ale         ,98
+Pale Lager - North Am. / Light  ,99
+Bitter - Ordinary / Best        ,100

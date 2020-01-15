@@ -31,7 +31,7 @@ t.fit_on_texts(texts)
 dataset_processed = [list(a) for a in
                      zip(t.texts_to_sequences(texts), (entry[1] for entry in dataset), (entry[2] for entry in dataset))]
 
-with open('tokenized.csv', mode='w', newline='', encoding='utf-8') as output_file:
+with open('final_dataset.csv', mode='w', newline='', encoding='utf-8') as output_file:
     writer = csv.writer(output_file, delimiter=',')
     writer.writerow(['text vectorized', 'wine/beer', 'type'])
     for row in dataset_processed:

@@ -12,7 +12,7 @@ from keras.preprocessing import sequence
 
 import constant
 
-with open('tokenized.csv', newline='', encoding='utf-8') as file:
+with open('final_dataset.csv', newline='', encoding='utf-8') as file:
     reader = csv.DictReader(file, delimiter=',')
     rows = [row for row in reader]
 
