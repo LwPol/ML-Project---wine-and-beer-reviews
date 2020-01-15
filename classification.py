@@ -1,7 +1,7 @@
 from __future__ import print_function
 
 import csv
-import random
+from ast import literal_eval
 
 import numpy as np
 from keras.layers import Conv1D, GlobalMaxPooling1D
@@ -9,40 +9,30 @@ from keras.layers import Dense, Dropout, Activation
 from keras.layers import Embedding
 from keras.models import Sequential
 from keras.preprocessing import sequence
-from keras.preprocessing.text import Tokenizer
 
-with open('wines_final.csv', newline='', encoding='utf-8') as file:
-    reader = csv.DictReader(file, delimiter=';')
+import constant
+
+with open('tokenized.csv', newline='', encoding='utf-8') as file:
+    reader = csv.DictReader(file, delimiter=',')
     rows = [row for row in reader]
 
-dataset = [(row['description'], 0) for row in rows]
+dataset = [(row['review'], row['wine/beer']) for row in rows]
 
-with open('beers_final.csv', newline='', encoding='utf-8') as file:
-    reader = csv.DictReader(file, delimiter=';')
-    rows = [row for row in reader]
+max_num_of_distinguished_words = 10000
 
-dataset = dataset + [(row['review'], 1) for row in rows]
-
-random.shuffle(dataset)
-
-t = Tokenizer(num_words=7000)
-texts = [text[0] for text in dataset]
-t.fit_on_texts(texts)
-
-dataset_processed = [(x, y) for (x, y) in zip(t.texts_to_sequences(texts), (entry[1] for entry in dataset))]
 # print(len(dataset_processed))
 
-dataset_size = len(dataset_processed)
-train, test = dataset_processed[:dataset_size // 2], dataset_processed[dataset_size // 2:]
+dataset_size = len(dataset)
+train, test = dataset[:dataset_size // 2], dataset[dataset_size // 2:]
 
 # print("Train size:", len(train))
 # print("Test size:", len(test))
 
-x_train, y_train = np.array([x[0] for x in train]), np.array([x[1] for x in train]).astype(int)
-x_test, y_test = np.array([x[0] for x in test]), np.array([x[1] for x in test]).astype(int)
+x_train, y_train = np.array([literal_eval(x[0]) for x in train]), np.array([x[1] for x in train]).astype(int)
+x_test, y_test = np.array([literal_eval(x[0]) for x in test]), np.array([x[1] for x in test]).astype(int)
 
 # set parameters:
-max_features = 7000
+max_features = constant.WORDS_NUMBER
 maxlen = 400
 batch_size = 32
 embedding_dims = 50

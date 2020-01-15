@@ -6,6 +6,8 @@ import random
 
 from keras.preprocessing.text import Tokenizer
 
+import constant
+
 with open('128wine_varieties.csv', newline='', encoding='utf-8') as file:
     reader = csv.DictReader(file, delimiter=',')
     rows = [row for row in reader]
@@ -22,7 +24,7 @@ dataset = dataset + [list(a) for a in
 
 random.shuffle(dataset)
 
-t = Tokenizer(num_words=10000)
+t = Tokenizer(num_words=constant.WORDS_NUMBER)
 texts = [text[0] for text in dataset]
 t.fit_on_texts(texts)
 
