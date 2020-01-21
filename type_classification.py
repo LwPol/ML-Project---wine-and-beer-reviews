@@ -9,7 +9,6 @@ from keras.layers import Dense, Dropout, Activation
 from keras.layers import Embedding
 from keras.models import Sequential
 from keras.preprocessing import sequence
-from tensorflow import keras
 
 import constant
 
@@ -56,7 +55,6 @@ def create_model(dataset, file_name):
 
     x_train = sequence.pad_sequences(x_train, maxlen=maxlen)
     x_test = sequence.pad_sequences(x_test, maxlen=maxlen)
-    #
 
     model = Sequential()
 
@@ -81,19 +79,15 @@ def create_model(dataset, file_name):
     model.add(Dense(output_dimension))
     model.add(Activation('sigmoid'))
     #
-    # model.compile(loss='binary_crossentropy',
-    #             optimizer='adam',
-    #            metrics=['accuracy'])
-    # model.fit(x_train, y_train,
-    #         batch_size=batch_size,
-    #        epochs=epochs)
-    print((y_test.shape))
-    print((y_test[0:50]))
-    model = keras.models.load_model('wine_type_model.h5')
-    res = model.evaluate(x_test, y_test)
-    print(res)
+    model.compile(loss='binary_crossentropy',
+                  optimizer='adam',
+                  metrics=['accuracy'])
+    model.fit(x_train, y_train,
+              batch_size=batch_size,
+              epochs=epochs)
+    return model
 
 
-create_model(wine_dataset, 'wine_type_model')
+# create_model(wine_dataset, 'wine_type_model')
 
-# create_model(beer_dataset, 'beer_type_model')
+create_model(beer_dataset, 'beer_type_model')

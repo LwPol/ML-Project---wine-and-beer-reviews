@@ -57,41 +57,42 @@ x_test = sequence.pad_sequences(x_test, maxlen=maxlen)
 print('x_train shape:', x_train.shape)
 print('x_test shape:', x_test.shape)
 #
-print('Build model...')
-model = Sequential()
 
-# we start off with an efficient embedding layer which maps
-# our vocab indices into embedding_dims dimensions
-model.add(Embedding(max_features,
-                    embedding_dims,
-                    input_length=maxlen))
-model.add(Dropout(0.2))
-#
-# we add a Convolution1D, which will learn filters
-# word group filters of size filter_length:
-model.add(Conv1D(filters,
-                 kernel_size,
-                 padding='valid',
-                 activation='relu',
-                 strides=1))
-# we use max pooling:
-model.add(GlobalMaxPooling1D())
-#
-# We add a vanilla hidden layer:
-model.add(Dense(hidden_dims))
-model.add(Dropout(0.2))
-model.add(Activation('relu'))
-#
-# We project onto a single unit output layer, and squash it with a sigmoid:
-model.add(Dense(1))
-model.add(Activation('sigmoid'))
-#
-model.compile(loss='binary_crossentropy',
-              optimizer='adam',
-              metrics=['accuracy'])
-model.fit(x_train, y_train,
-          batch_size=batch_size,
-          epochs=epochs,
-          validation_data=(x_test, y_test))
+def create_model():
+    model = Sequential()
 
-# model.save('wine_beer_distinguisher.h5')
+    # we start off with an efficient embedding layer which maps
+    # our vocab indices into embedding_dims dimensions
+    model.add(Embedding(max_features,
+                        embedding_dims,
+                        input_length=maxlen))
+    model.add(Dropout(0.2))
+    #
+    # we add a Convolution1D, which will learn filters
+    # word group filters of size filter_length:
+    model.add(Conv1D(filters,
+                     kernel_size,
+                     padding='valid',
+                     activation='relu',
+                     strides=1))
+    # we use max pooling:
+    model.add(GlobalMaxPooling1D())
+    #
+    # We add a vanilla hidden layer:
+    model.add(Dense(hidden_dims))
+    model.add(Dropout(0.2))
+    model.add(Activation('relu'))
+    #
+    # We project onto a single unit output layer, and squash it with a sigmoid:
+    model.add(Dense(1))
+    model.add(Activation('sigmoid'))
+    #
+    model.compile(loss='binary_crossentropy',
+                  optimizer='adam',
+                  metrics=['accuracy'])
+    model.fit(x_train, y_train,
+              batch_size=batch_size,
+              epochs=epochs,
+              validation_data=(x_test, y_test))
+    model.save('wine_beer_distinguisher.h5')
+    return model
