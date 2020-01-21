@@ -1,3 +1,4 @@
+import argparse
 import csv
 import random
 from ast import literal_eval
@@ -14,26 +15,23 @@ from sklearn.metrics import confusion_matrix
 
 import constant
 
+parser = argparse.ArgumentParser()
+parser.add_argument("--output", required=True)
+parser.add_argument("--dataset", required=True)
+args = parser.parse_args()
+
 maxlen = 400
 
-with open('final_dataset.csv', newline='', encoding='utf-8') as file:
+with open(args.dataset + '.csv', newline='', encoding='utf-8') as file:
     reader = csv.DictReader(file, delimiter=',')
-    rows = [row for row in reader]
-
-beer_dataset = []
-wine_dataset = []
-for row in rows:
-    if int(row['wine/beer']) == 0:
-        wine_dataset += [(row['review'], int(row['type']))]
-    if int(row['wine/beer']) == 1:
-        beer_dataset += [(row['review'], int(row['type']))]
+    dataset = [row for row in reader]
 
 
 def create_model(dataset):
     dataset_size = len(dataset)
     output_dimension = max(x[1] for x in dataset) + 1
     random.shuffle(dataset)
-    train, test = dataset[:dataset_size // 2], dataset[dataset_size // 2:]
+    train, test = dataset[:dataset_size * 3 // 4], dataset[dataset_size * 3 // 4:]
 
     x_train = np.array([literal_eval(x[0]) for x in train])
     y_train = np_utils.to_categorical(np.array([x[1] for x in train]))
@@ -44,11 +42,6 @@ def create_model(dataset):
 
     # print(x_train[0])
     # print(y_train[0])
-
-    print(x_train)
-    print(y_train)
-    print(len(x_train), 'train sequences')
-    print(len(x_test), 'test sequences')
 
     x_train = sequence.pad_sequences(x_train, maxlen=maxlen)
     x_test = sequence.pad_sequences(x_test, maxlen=maxlen)
@@ -90,6 +83,8 @@ def create_model(dataset):
               batch_size=batch_size,
               epochs=epochs)
 
+    y_pred = model.predict(x_test)
+    plot_array(y_test, y_pred)
     return model
 
 
@@ -99,8 +94,7 @@ def plot_array(y_test, y_pred):
     sn.heatmap(df_cm, annot=False, fmt="d")
     plt.figure(figsize=(10, 7))
     plt.show()
+    plt.savefig('charts/' + args.output + '.png')
 
 
-if __name__ == '__main__':
-    # beer_model = create_model(beer_dataset)
-    wine_model = create_model(wine_dataset)
+create_model(dataset)

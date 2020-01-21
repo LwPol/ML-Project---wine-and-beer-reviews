@@ -1,13 +1,13 @@
 import argparse
-import code
 import csv
 import random
 from collections import Counter
 
 parser = argparse.ArgumentParser()
-parser.add_argument("--file")
-parser.add_argument("--type", choices=["wine", "beer"])
-parser.add_argument("--threshold", type=int)
+parser.add_argument("--file", required=True)
+parser.add_argument("--type", choices=["wine", "beer"], required=True)
+parser.add_argument("--max", type=int, required=True)
+parser.add_argument("--min", type=int, required=True)
 args = parser.parse_args()
 
 dataset = []
@@ -19,21 +19,18 @@ with open('final_dataset.csv', newline='', encoding='utf-8') as file:
 
 random.shuffle(dataset)
 
-c = Counter()
 
-
-def chuj(dataset):
+def filter(dataset):
     c = Counter()
+    dataset_distribution = Counter(entry[1] for entry in dataset)
     for entry in dataset:
-        if c.get(entry[1], 0) < args.threshold:
+        if args.max > c.get(entry[1], 0) and dataset_distribution.get(entry[1]) >= args.min:
             c.update([entry[1]])
             yield entry
 
 
-dataset_filtered = list(chuj(dataset))
+dataset_filtered = list(filter(dataset))
 
-with open(args.file, mode='w', newline='', encoding='utf-8') as output_file:
+with open(args.file + '.csv', mode='w', newline='', encoding='utf-8') as output_file:
     writer = csv.writer(output_file)
     writer.writerows(dataset_filtered)
-
-code.interact(local=locals())

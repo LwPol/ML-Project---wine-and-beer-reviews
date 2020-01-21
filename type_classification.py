@@ -81,7 +81,7 @@ def create_model(dataset, file_name):
     #
     model.compile(loss='binary_crossentropy',
                   optimizer='adam',
-                  metrics=['accuracy'])
+                  metrics=['categorical_accuracy'])
     model.fit(x_train, y_train,
               batch_size=batch_size,
               epochs=epochs)
