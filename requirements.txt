@@ -1,6 +1,8 @@
 numpy
 keras
 nltk
+pandas
+matplotlib
 appdirs==1.4.3
 tensorflow==2.0.0
 beautifulsoup4==4.8.1
@@ -24,4 +26,4 @@ urllib3==1.25.7
 w3lib==1.21.0
 websockets==8.1
 langdetect==1.0.7
-tensorflow==2.0.0
+tensorflow-gpu==2.0.0
