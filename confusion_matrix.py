@@ -1,13 +1,14 @@
 import argparse
+import code
 import csv
 from ast import literal_eval
 
 import keras.models
-import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import seaborn as sn
 from keras.utils import np_utils
+from keras_preprocessing import sequence
 from sklearn.metrics import confusion_matrix
 
 parser = argparse.ArgumentParser()
@@ -20,10 +21,9 @@ args = parser.parse_args()
 def plot_array(y_test, y_pred):
     array = confusion_matrix(y_test, y_pred)
     df_cm = pd.DataFrame(array)
-    sn.heatmap(df_cm, annot=False, fmt="d")
-    plt.figure(figsize=(10, 7))
-    plt.show()
-    plt.savefig('charts/' + args.output)
+    plot = sn.heatmap(df_cm, annot=False, fmt="d")
+    code.interact(local=locals())
+    plot.savefig('charts/' + args.image)
 
 
 with open(args.dataset, newline='', encoding='utf-8') as file:
@@ -32,6 +32,9 @@ with open(args.dataset, newline='', encoding='utf-8') as file:
 
 x_test = np.array([literal_eval(x[0]) for x in dataset])
 y_test = np_utils.to_categorical(np.array([x[1] for x in dataset]))
+
+maxlen = 400
+x_test = sequence.pad_sequences(x_test, maxlen=maxlen)
 
 model = keras.models.load_model(args.model)
 y_pred = np.argmax(model.predict(x_test), axis=1)
