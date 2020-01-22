@@ -25,7 +25,7 @@ def plot_array(y_test, y_pred):
     fig.savefig('charts/' + args.image)
 
 
-with open(args.dataset, newline='', encoding='utf-8') as file:
+with open('/models' + args.dataset, newline='', encoding='utf-8') as file:
     reader = csv.reader(file, delimiter=',')
     dataset = [(row[0], int(row[1])) for row in reader]
 
@@ -35,6 +35,6 @@ y_test = np_utils.to_categorical(np.array([x[1] for x in dataset]))
 maxlen = 400
 x_test = sequence.pad_sequences(x_test, maxlen=maxlen)
 
-model = keras.models.load_model(args.model)
+model = keras.models.load_model('/models' + args.model)
 y_pred = np.argmax(model.predict(x_test), axis=1)
 plot_array(np.argmax(y_test, axis=1), y_pred)
