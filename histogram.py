@@ -9,7 +9,7 @@ parser.add_argument("--input", required=True)
 parser.add_argument("--output", required=True)
 args = parser.parse_args()
 
-with open(args.input + '.csv', newline='', encoding='utf-8') as file:
+with open(args.input, newline='', encoding='utf-8') as file:
     reader = csv.reader(file, delimiter=',')
     dataset = [(row[0], int(row[1])) for row in reader]
 
@@ -42,4 +42,4 @@ def create_histogram(filename, dataset):
 # create_histogram('wines.png', wine_dataset)
 # create_histogram('beers.png', beer_dataset)
 
-create_histogram('charts/' + args.output + '.png', dataset)
+create_histogram('charts/' + args.output, dataset)

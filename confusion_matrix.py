@@ -1,4 +1,5 @@
 import argparse
+import code
 import csv
 import random
 from ast import literal_eval
@@ -22,9 +23,9 @@ args = parser.parse_args()
 
 maxlen = 400
 
-with open(args.dataset + '.csv', newline='', encoding='utf-8') as file:
-    reader = csv.DictReader(file, delimiter=',')
-    dataset = [row for row in reader]
+with open(args.dataset, newline='', encoding='utf-8') as file:
+    reader = csv.reader(file, delimiter=',')
+    dataset = [(row[0], int(row[1])) for row in reader]
 
 
 def create_model(dataset):
@@ -32,7 +33,7 @@ def create_model(dataset):
     output_dimension = max(x[1] for x in dataset) + 1
     random.shuffle(dataset)
     train, test = dataset[:dataset_size * 3 // 4], dataset[dataset_size * 3 // 4:]
-
+    code.interact(local=locals())
     x_train = np.array([literal_eval(x[0]) for x in train])
     y_train = np_utils.to_categorical(np.array([x[1] for x in train]))
     x_test = np.array([literal_eval(x[0]) for x in test])
@@ -83,8 +84,8 @@ def create_model(dataset):
               batch_size=batch_size,
               epochs=epochs)
 
-    y_pred = model.predict(x_test)
-    plot_array(y_test, y_pred)
+    y_pred = np.argmax(model.predict(x_test), axis=1)
+    plot_array(np.argmax(y_test, axis=1), y_pred)
     return model
 
 
@@ -94,7 +95,7 @@ def plot_array(y_test, y_pred):
     sn.heatmap(df_cm, annot=False, fmt="d")
     plt.figure(figsize=(10, 7))
     plt.show()
-    plt.savefig('charts/' + args.output + '.png')
+    plt.savefig('charts/' + args.output)
 
 
 create_model(dataset)

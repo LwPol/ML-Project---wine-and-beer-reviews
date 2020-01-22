@@ -31,6 +31,6 @@ def filter(dataset):
 
 dataset_filtered = list(filter(dataset))
 
-with open(args.file + '.csv', mode='w', newline='', encoding='utf-8') as output_file:
+with open(args.file, mode='w', newline='', encoding='utf-8') as output_file:
     writer = csv.writer(output_file)
     writer.writerows(dataset_filtered)
