@@ -1,5 +1,4 @@
 import argparse
-import code
 import csv
 from ast import literal_eval
 
@@ -22,8 +21,8 @@ def plot_array(y_test, y_pred):
     array = confusion_matrix(y_test, y_pred)
     df_cm = pd.DataFrame(array)
     plot = sn.heatmap(df_cm, annot=False, fmt="d")
-    code.interact(local=locals())
-    plot.savefig('charts/' + args.image)
+    fig = plot.get_figure()
+    fig.savefig('charts/' + args.image)
 
 
 with open(args.dataset, newline='', encoding='utf-8') as file:
