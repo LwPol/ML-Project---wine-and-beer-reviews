@@ -5,13 +5,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 parser = argparse.ArgumentParser()
-parser.add_argument("--input", required=True)
-parser.add_argument("--output", required=True)
+parser.add_argument("--prefix", required=True)
 args = parser.parse_args()
-
-with open(args.input, newline='', encoding='utf-8') as file:
-    reader = csv.reader(file, delimiter=',')
-    dataset = [(row[0], int(row[1])) for row in reader]
 
 
 def sort_dataset(dataset):
@@ -20,26 +15,26 @@ def sort_dataset(dataset):
     return [entry[0] for entry in sorted_entries], [entry[1] for entry in sorted_entries]
 
 
-def save_histogram(filename, unique, counts):
+def save_histogram(main_title, unique, counts):
     plt.clf()
     plt.bar(unique, counts, 1)
-    plt.savefig(filename)
+    plt.title(label=main_title)
+    plt.savefig('charts/' + main_title)
 
 
-def create_histogram(filename, dataset):
+def extract_data(filename):
+    with open('models/' + filename + '.csv', newline='', encoding='utf-8') as file:
+        reader = csv.reader(file, delimiter=',')
+        dataset = [(row[0], int(row[1])) for row in reader]
     unique, counts = sort_dataset(dataset)
-    save_histogram(filename, unique, counts)
+    return unique, counts
 
 
-# beer_dataset = []
-# wine_dataset = []
-# for row in rows:
-#     if int(row['wine/beer']) == 0:
-#         wine_dataset += [(row['review'], int(row['type']))]
-#     if int(row['wine/beer']) == 1:
-#         beer_dataset += [(row['review'], int(row['type']))]
-#
-# create_histogram('wines.png', wine_dataset)
-# create_histogram('beers.png', beer_dataset)
+def create_histogram(prefix, dataset_type):
+    main_title = prefix + '_' + dataset_type
+    unique, counts = extract_data(main_title)
+    save_histogram(main_title, unique, counts)
 
-create_histogram('charts/' + args.output, dataset)
+
+create_histogram(args.prefix, 'test')
+create_histogram(args.prefix, 'train')

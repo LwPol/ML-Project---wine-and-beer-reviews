@@ -4,7 +4,6 @@ import random
 from collections import Counter
 
 parser = argparse.ArgumentParser()
-parser.add_argument("--file", required=True)
 parser.add_argument("--type", choices=["wine", "beer"], required=True)
 parser.add_argument("--max", type=int, required=True)
 parser.add_argument("--min", type=int, required=True)
@@ -31,6 +30,7 @@ def filter(dataset):
 
 dataset_filtered = list(filter(dataset))
 
-with open(args.file, mode='w', newline='', encoding='utf-8') as output_file:
+with open(args.type + str(args.min) + '-' + str(args.max) + '.csv', mode='w', newline='',
+          encoding='utf-8') as output_file:
     writer = csv.writer(output_file)
     writer.writerows(dataset_filtered)
