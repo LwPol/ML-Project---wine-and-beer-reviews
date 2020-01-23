@@ -48,7 +48,7 @@ def dump_dataset(modelname, dataset, dataset_suffix):
 def create_model(dataset, file_name):
     dataset_size = len(dataset)
     output_dimension = max(x[1] for x in dataset) + 1
-    train, test = dataset[:dataset_size // 2], dataset[dataset_size // 2:]
+    train, test = dataset[:dataset_size * 3 // 4], dataset[dataset_size * 3 // 4:]
 
     dump_dataset(args.model, train, 'train')
     dump_dataset(args.model, test, 'test')
