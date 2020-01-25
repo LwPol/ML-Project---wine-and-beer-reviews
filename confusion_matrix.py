@@ -28,7 +28,7 @@ def plot_array(y_test, y_pred):
 
     translated_matrix = translate_matrix_to_bigger_empty(conf_matrix)
 
-    df_cm = pd.DataFrame(translated_matrix)
+    df_cm = pd.DataFrame(conf_matrix)
     ax = plt.axes()
     ax.set_title(args.prefix)
     plot = sn.heatmap(df_cm, annot=False, fmt="d", ax=ax, cmap="PiYG")

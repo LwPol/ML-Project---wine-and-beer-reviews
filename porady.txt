@@ -1,0 +1,9 @@
+dwukierunkowy lstm
+zamiast embedding uzyc word2vec
+SPRAWOZDANIE:
+opisanie projektu
+jakie metody
+opisac metody
+kod
+
+poskladanie skryptow do gotowego produktu
